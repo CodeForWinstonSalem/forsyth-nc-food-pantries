@@ -13,4 +13,6 @@ data_json <- toJSON(data_list)
 
 test <- fromJSON(data_json)
 
-writeLines(data_json, 'data.json')
+writeLines(
+  c('var pantries = ', data_json, ';'),
+  'data.json')

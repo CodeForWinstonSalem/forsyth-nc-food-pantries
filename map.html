@@ -17,6 +17,7 @@
   </head>
   <body>
     <div id="map"></div>
+    <script src='data.json'></script>
     <script>
       var map;
       function initMap() {
@@ -25,24 +26,38 @@
           zoom: 12
         });
 
-        var marker = new google.maps.Marker({
-            position    : new google.maps.LatLng(36.026744, -80.384827),
-            title       : 'Clemmons Food Pantry'});
+        function drawMarker(pantry) {
 
-        marker.setMap(map);
+          var marker = new google.maps.Marker({
+              position    : new google.maps.LatLng(pantry.latitude, pantry.longitude),
+              title       : pantry.name});
 
-        var info = new google.maps.InfoWindow({
-          content: '<div id="hours">Hours<ul>' +
-                   '<li>Tuesday 4-6pm</li>' +
-                   '<li>Thursday 4-7pm</li>' +
-                   '<li>Saturday 9-11am</li>' +
-                   '</ul></div>' +
-                   '<div id="phone">Phone: 336-331-3432</div>'
-        });
+          marker.setMap(map);
 
-        marker.addListener('click', function() {
-          info.open(map, marker);
-        });
+          var info = new google.maps.InfoWindow({
+            content: '<strong>' + pantry.name + '</strong><p>' +
+                     '<div id="address">' + pantry.street + ', ' + pantry.city + ' ' + pantry.zip + '</div><p>' +
+                     '<div id="hours">Hours:' +
+                     '<ul>' +
+                     '<li>Monday ' + pantry.monday + '</li>' +
+                     '<li>Tuesday ' + pantry.tuesday + '</li>' +
+                     '<li>Wednesday ' + pantry.wednesday + '</li>' +
+                     '<li>Thursday ' + pantry.thursday + '</li>' +
+                     '<li>Friday ' + pantry.friday + '</li>' +
+                     '<li>Saturday ' + pantry.saturday + '</li>' +
+                     '<li>Sunday ' + pantry.sunday + '</li>' +
+                     '</ul>' +
+                     '</div>' +
+                     '<div id="phone">Phone: ' + pantry.phone + '</div>'
+          });
+
+          marker.addListener('click', function() {
+            info.open(map, marker);
+          });
+        }
+
+        pantries.map(drawMarker);
+
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbmlhLuyY1F4zMuEyLVZCGBJ2_5-ycN0I&callback=initMap"
