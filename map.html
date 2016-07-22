@@ -64,8 +64,7 @@
 
         $.getJSON('http://cors.io/?u=https://spreadsheets.google.com/feeds/list/1nlYOuCFByr6Cmy4XA1hlOt69vQil4hVfHeYypsxoll0/od6/public/values?alt=json',
           function(data) {
-            pantries = data.feed.entry;
-            console.log(pantries);
+            var pantries = data.feed.entry;
             pantries.map(drawMarker);
           });
       });
