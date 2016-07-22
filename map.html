@@ -17,9 +17,7 @@
   </head>
   <body>
     <div id="map"></div>
-    <!--<script src='data.json'></script>-->
-    <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
-    <script src="jquery-csv.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbmlhLuyY1F4zMuEyLVZCGBJ2_5-ycN0I"></script>
     <script>
 
@@ -28,26 +26,26 @@
       function drawMarker(pantry) {
 
         var marker = new google.maps.Marker({
-            position    : new google.maps.LatLng(pantry.latitude, pantry.longitude),
-            title       : pantry.name});
+            position    : new google.maps.LatLng(pantry.gsx$latitude['$t'], pantry.gsx$longitude['$t']),
+            title       : pantry.gsx$name['$t']});
 
         marker.setMap(map);
 
         var info = new google.maps.InfoWindow({
-          content: '<strong>' + pantry.name + '</strong><p>' +
-                   '<div id="address">' + pantry.street + ', ' + pantry.city + ' ' + pantry.zip + '</div><p>' +
+          content: '<strong>' + pantry.gsx$name['$t'] + '</strong><p>' +
+                   '<div id="address">' + pantry.gsx$street['$t'] + ', ' + pantry.gsx$city['$t'] + ' ' + pantry.gsx$zip['$t'] + '</div><p>' +
                    '<div id="hours">Hours:' +
                    '<ul>' +
-                   '<li>Monday ' + pantry.monday + '</li>' +
-                   '<li>Tuesday ' + pantry.tuesday + '</li>' +
-                   '<li>Wednesday ' + pantry.wednesday + '</li>' +
-                   '<li>Thursday ' + pantry.thursday + '</li>' +
-                   '<li>Friday ' + pantry.friday + '</li>' +
-                   '<li>Saturday ' + pantry.saturday + '</li>' +
-                   '<li>Sunday ' + pantry.sunday + '</li>' +
+                   '<li>Monday ' + pantry.gsx$monday['$t'] + '</li>' +
+                   '<li>Tuesday ' + pantry.gsx$tuesday['$t'] + '</li>' +
+                   '<li>Wednesday ' + pantry.gsx$wednesday['$t'] + '</li>' +
+                   '<li>Thursday ' + pantry.gsx$thursday['$t'] + '</li>' +
+                   '<li>Friday ' + pantry.gsx$friday['$t'] + '</li>' +
+                   '<li>Saturday ' + pantry.gsx$saturday['$t'] + '</li>' +
+                   '<li>Sunday ' + pantry.gsx$sunday['$t'] + '</li>' +
                    '</ul>' +
                    '</div>' +
-                   '<div id="phone">Phone: ' + pantry.phone + '</div>'
+                   '<div id="phone">Phone: ' + pantry.gsx$phone['$t'] + '</div>'
         });
 
         marker.addListener('click', function() {
@@ -64,15 +62,12 @@
             zoom: 12
           });
 
-        $.ajax({
-          type: "GET",
-          url: "https://docs.google.com/spreadsheets/d/1nlYOuCFByr6Cmy4XA1hlOt69vQil4hVfHeYypsxoll0/pub?output=csv",
-          dataType: "text/csv",
-          complete: function (result) {
-            var pantries = $.csv.toObjects(result.responseText);
+        $.getJSON('http://cors.io/?u=https://spreadsheets.google.com/feeds/list/1nlYOuCFByr6Cmy4XA1hlOt69vQil4hVfHeYypsxoll0/od6/public/values?alt=json',
+          function(data) {
+            pantries = data.feed.entry;
+            console.log(pantries);
             pantries.map(drawMarker);
-          }
-        });
+          });
       });
     </script>
   </body>
