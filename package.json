@@ -1,0 +1,23 @@
+{
+  "name": "forsyth-nc-food-pantries",
+  "version": "1.0.0",
+  "description": "displays food pantries in north carolina",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeForWinstonSalem/forsyth-nc-food-pantries.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodeForWinstonSalem/forsyth-nc-food-pantries/issues"
+  },
+  "homepage": "https://github.com/CodeForWinstonSalem/forsyth-nc-food-pantries#readme"
+}
