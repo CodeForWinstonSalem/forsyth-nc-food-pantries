@@ -1,9 +1,11 @@
 """NC Food Pantry Sheet Parser
 Usage:
     parse_agencies.py <filename> [<sheet>...]
+    parse_agencies.py (-j | --json) <filename> [<sheet>...]
     parse_agencies.py (-h | --help)
 
 Options:
+    -j --json  Export as json
     -h --help  Display this message
 
 This will parse out the following information from an xls file used for the
@@ -61,6 +63,10 @@ class Agency(object):
 
     def csv(self):
          return '"{name}","{street}","{city}",{zipcode},{latitude},{longitude},{agency_type},{mon},{tue},{wed},{thu},{fri},{sat},{sun},"{frequency}",{telephone}\n'.format(name=self.name, street=self.street, zipcode=self.zipcode, agency_type=self.type, mon=self.hours.monday, tue=self.hours.tuesday, wed=self.hours.wednesday, thu=self.hours.thursday, fri=self.hours.friday, sat=self.hours.saturday, sun=self.hours.sunday, latitude=self.latitude, longitude=self.longitude, frequency=self.frequency, telephone=self.telephone, city=self.city)
+
+    def json(self):
+        template = """{{\n"name": "{name}",\n"street": "{street}",\n"city": "{city}",\n"zip": {zipcode},\n"latitude": {latitude},\n"longitude": {longitude},\n"type": "{agency_type}",\n"monday": "{mon}",\n"tuesday": "{tue}",\n"wednesday": "{wed}",\n"thursday": "{thu}",\n"friday": "{fri}",\n"saturday": "{sat}",\n"sunday": "{sun}",\n"frequency": "{frequency}".,\n"phone": "{telephone}"\n}}"""
+        return template.format(name=self.name, street=self.street, zipcode=self.zipcode, agency_type=self.type, mon=self.hours.monday, tue=self.hours.tuesday, wed=self.hours.wednesday, thu=self.hours.thursday, fri=self.hours.friday, sat=self.hours.saturday, sun=self.hours.sunday, latitude=self.latitude, longitude=self.longitude, frequency=self.frequency, telephone=self.telephone, city=self.city)
 
 
 def find_column(sheet, pattern):
@@ -145,37 +151,37 @@ def parse_sheet(sheet):
         telephone = str(sheet.cell_value(rowx=ri, colx=telephone_col))
         mon_hours = sheet.cell(rowx=ri, colx=mon_col)
         if mon_hours.ctype == 3:
-            mon_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            mon_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             mon_hours = mon_hours.value
         tue_hours = sheet.cell(rowx=ri, colx=tue_col)
         if tue_hours.ctype == 3:
-            tue_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            tue_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             tue_hours = tue_hours.value
         wed_hours = sheet.cell(rowx=ri, colx=wed_col)
         if wed_hours.ctype == 3:
-            wed_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            wed_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             wed_hours = wed_hours.value
         thu_hours = sheet.cell(rowx=ri, colx=thu_col)
         if thu_hours.ctype == 3:
-            thu_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            thu_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             thu_hours = thu_hours.value
         fri_hours = sheet.cell(rowx=ri, colx=fri_col)
         if fri_hours.ctype == 3:
-            fri_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            fri_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             fri_hours = fri_hours.value
         sat_hours = sheet.cell(rowx=ri, colx=sat_col)
         if sat_hours.ctype == 3:
-            sat_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            sat_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             sat_hours = sat_hours.value
         sun_hours = sheet.cell(rowx=ri, colx=sun_col)
         if sun_hours.ctype == 3:
-            sun_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, book.datemode).strftime("%H:%M")
+            sun_hours = xlrd.xldate.xldate_as_datetime(sheet.cell(colx=9, rowx=70).value, sheet.book.datemode).strftime("%H:%M")
         else:
             sun_hours = sun_hours.value
         hours = Hours(mon_hours, tue_hours, wed_hours, thu_hours, fri_hours,
@@ -215,9 +221,17 @@ def parse_sheet(sheet):
                         frequency, telephone, agency_type))
     return agencies
 
+
+def test():
+    book = xlrd.open_workbook('/home/chris/Projects/codeforwinston/forsyth-nc-food-pantries/Agency Operating Days and Hours - PUBLIC.xls')
+    return book.sheet_by_name('Forsyth')
+
 if __name__=="__main__":
     arguments = docopt(__doc__)
     book = xlrd.open_workbook(arguments['<filename>'])
+    extension = 'csv'
+    if arguments['--json']:
+        extension = 'json'
     if len(arguments['<sheet>'])>0:
         names = arguments['<sheet>']
     else:
@@ -227,7 +241,14 @@ if __name__=="__main__":
         print("Reading {} Sheet".format(sheet.name))
         agencies = parse_sheet(sheet)
         print("{} agencies found".format(len(agencies)))
-        with open('{}Agencies.csv'.format(sheet.name), 'w+') as f:
-            f.write('name,street,city,zip,latitude,longitude,type,monday,tuesday,wednesday,thursday,friday,saturday,sunday,frequency,phone\n')
+        with open('{}Agencies.{}'.format(sheet.name, extension), 'w+') as f:
+            if extension == 'csv':
+                f.write('name,street,city,zip,latitude,longitude,type,monday,tuesday,wednesday,thursday,friday,saturday,sunday,frequency,phone\n')
+            elif extension == 'json':
+                f.write('var pantries =\n  [\n')
             for agency in agencies:
-                f.write(agency.csv())
+                if extension == 'csv':
+                    f.write(agency.csv())
+                elif extension == 'json':
+                    f.write(agency.json())
+                    f.write(',\n')
