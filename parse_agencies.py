@@ -222,10 +222,6 @@ def parse_sheet(sheet):
     return agencies
 
 
-def test():
-    book = xlrd.open_workbook('/home/chris/Projects/codeforwinston/forsyth-nc-food-pantries/Agency Operating Days and Hours - PUBLIC.xls')
-    return book.sheet_by_name('Forsyth')
-
 if __name__=="__main__":
     arguments = docopt(__doc__)
     book = xlrd.open_workbook(arguments['<filename>'])
