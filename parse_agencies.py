@@ -65,7 +65,7 @@ class Agency(object):
          return '"{name}","{street}","{city}",{zipcode},{latitude},{longitude},{agency_type},{mon},{tue},{wed},{thu},{fri},{sat},{sun},"{frequency}",{telephone}\n'.format(name=self.name, street=self.street, zipcode=self.zipcode, agency_type=self.type, mon=self.hours.monday, tue=self.hours.tuesday, wed=self.hours.wednesday, thu=self.hours.thursday, fri=self.hours.friday, sat=self.hours.saturday, sun=self.hours.sunday, latitude=self.latitude, longitude=self.longitude, frequency=self.frequency, telephone=self.telephone, city=self.city)
 
     def json(self):
-        template = """{{\n"name": "{name}",\n"street": "{street}",\n"city": "{city}",\n"zip": {zipcode},\n"latitude": {latitude},\n"longitude": {longitude},\n"type": "{agency_type}",\n"monday": "{mon}",\n"tuesday": "{tue}",\n"wednesday": "{wed}",\n"thursday": "{thu}",\n"friday": "{fri}",\n"saturday": "{sat}",\n"sunday": "{sun}",\n"frequency": "{frequency}".,\n"phone": "{telephone}"\n}}"""
+        template = """{{\n"name": "{name}",\n"street": "{street}",\n"city": "{city}",\n"zip": {zipcode},\n"latitude": {latitude},\n"longitude": {longitude},\n"type": "{agency_type}",\n"monday": "{mon}",\n"tuesday": "{tue}",\n"wednesday": "{wed}",\n"thursday": "{thu}",\n"friday": "{fri}",\n"saturday": "{sat}",\n"sunday": "{sun}",\n"frequency": "{frequency}",\n"phone": "{telephone}"\n}}"""
         return template.format(name=self.name, street=self.street, zipcode=self.zipcode, agency_type=self.type, mon=self.hours.monday, tue=self.hours.tuesday, wed=self.hours.wednesday, thu=self.hours.thursday, fri=self.hours.friday, sat=self.hours.saturday, sun=self.hours.sunday, latitude=self.latitude, longitude=self.longitude, frequency=self.frequency, telephone=self.telephone, city=self.city)
 
 
